@@ -29,7 +29,7 @@ let serviceAccount;
 if (fs.existsSync('./secrets/vending-machine-81e32-firebase-adminsdk-ftml1-bef0d2a34f.json')) {
     serviceAccount = require('./secrets/vending-machine-81e32-firebase-adminsdk-ftml1-bef0d2a34f.json');
 } else {
-    serviceAccount = JSON.parse(process.env.JOBS_FIREBASE_KEY);
+    serviceAccount = JSON.parse(process.env.VENDING_FIREBASE_KEY);
 }
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
