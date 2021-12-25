@@ -1,17 +1,17 @@
-import jwt from "jsonwebtoken";
+const jwt = require("jsonwebtoken");
 const authenticate = (req, res, next) => {
-    const token = req.header('Authorization').split(' ')[1];
-    let decodedToken;
     try{
+        // Grab token
+        const token = req.header('Authorization').split(' ')[1];
         // Verify token
-        decodedToken = jwt.verify(token, process.env.SECRET);
+        const decodedToken = jwt.verify(token, process.env.SECRET);
+        if (!decodedToken) {
+            return;
+        }
+        req.password = decodedToken;
+        next();
     } catch(err) {
         res.status(400).json({"Error": "Please Authenticate"})
     }
-    if (!decodedToken) {
-        return;
-    }
-    req.password = decodedToken;
-    next();
 }
-export default authenticate; 
+module.exports = authenticate; 

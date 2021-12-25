@@ -1,6 +1,8 @@
 name: CI
 env: 
-  VENDING_FIREBASE_KEY: ${{ secrets.VENDING_FIREBASE_KEY }} 
+  VENDING_FIREBASE_KEY: ${{ secrets.VENDING_FIREBASE_KEY }}
+  TOKEN: ${{ secrets.TOKEN }}
+  SECRET: ${{ secrets.SECRET }}
 on: push
 
 jobs:
