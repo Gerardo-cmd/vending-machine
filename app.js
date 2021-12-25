@@ -133,9 +133,7 @@ app.post('/soda', async (req, res) => {
     });
     return;
   }
-  // Decrease the remaining quantity by 1
-  let newRemaining = sodaRef._fieldsProto.remaining.integerValue - 1;
-  
+  const newRemaining = sodaRef._fieldsProto.remaining.integerValue - 1;
   const purchasedSoda = {
     productName: sodaRef._fieldsProto.productName.stringValue,
     description: sodaRef._fieldsProto.description.stringValue,
@@ -147,7 +145,6 @@ app.post('/soda', async (req, res) => {
   db.collection("Soda-Lineup").doc(`${docName}`).update({
     remaining: newRemaining
   });
-  // Will need to download a json file depicting the soda
   res.send({
     "code": 200,
     "data": purchasedSoda
