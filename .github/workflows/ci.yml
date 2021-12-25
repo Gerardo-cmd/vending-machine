@@ -12,7 +12,7 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '14.x'
-      - run: npm cd client
+      - run: cd client
       - run: npm install
       - run: cd ..
       - run: npm install
