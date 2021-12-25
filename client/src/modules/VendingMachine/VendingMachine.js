@@ -33,7 +33,6 @@ const VendingMachine = () => {
   }, [navigate]);
 
   const handleChoiceChange = (e) => {
-    console.log("Changing value to " + e.target.value.trim());
     setChoice(e.target.value.trim());
   };
 
@@ -41,7 +40,6 @@ const VendingMachine = () => {
     if (choice.length >= 2) {
       return;
     }
-    console.log("Changing value to " + e.target.value.trim());
     let oldChoice = choice;
     const newChoice = oldChoice + e.target.value.trim();
     setChoice(newChoice);
@@ -63,18 +61,64 @@ const VendingMachine = () => {
     return;
   };
 
+  const download = (filename, text) => {
+    let element = document.createElement('a');
+    element.setAttribute('href','data:text/plain;charset=utf-8, ' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  }
+
   const onPurchase = () => {
-    if (choice.split("")[0] == "0") {
-      if (parseInt(choice.split("")[1]) > sodas.length) {
+    // Making sure it is in the range and not "00"
+    if (choice.split("")[0] === "0") {
+      if ((parseInt(choice.split("")[1]) > sodas.length) || (parseInt(choice.split("")[1]) === 0)) {
         setErrorMessage("Invalid Input");
+        setChoice("");
+        return;
       }
     }
     else {
       if (parseInt(choice) > sodas.length) {
         setErrorMessage("Invalid Input");
+        setChoice("");
+        return;
       }
     }
-    // Make a fetch to POST /soda to purchase soda
+    let index = choice.split("")[0] === "0" ? (parseInt(choice.split("")[1]) - 1) : (parseInt(choice) - 1);
+    const productName = sodas[index].productName;
+    if (sodas[index].remaining === "0") {
+      setErrorMessage("Out of stock: Please wait for an admin to restock");
+      setChoice("");
+      return;
+    }
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Accept', 'application/json');
+    const data = {productName};
+    fetch("http://localhost:5000/soda", {
+      method: 'POST',
+      mode: 'cors',
+      headers: headers,
+      body: JSON.stringify(data),
+    })
+    .then((response) => {
+      return response.json();
+    })
+    .then(function (response) {
+      const filename = response.data.productName.replace(" ", "") + ".json";
+      const productData = {
+        productName: response.data.productName,
+        description: response.data.description
+      }
+      setChoice("");
+      download(filename, JSON.stringify(productData));
+    })
+    .catch((e) => {
+      navigate("/error");
+      console.log(e);
+    });
     return;
   };
 
@@ -88,7 +132,6 @@ const VendingMachine = () => {
         <div className="col-sm-4" />
       </div>
       <div className="row">
-
         <div className="col-md-8 col-sm-8 col-8 row">  
           <div className="col-1" />
           <div className="col-10" id="glass">

@@ -133,15 +133,23 @@ app.post('/soda', async (req, res) => {
     return;
   }
   // Decrease the remaining quantity by 1
-  console.log(sodaRef._fieldsProto.remaining.integerValue);
   let newRemaining = sodaRef._fieldsProto.remaining.integerValue - 1;
+  
+  const purchasedSoda = {
+    productName: sodaRef._fieldsProto.productName.stringValue,
+    description: sodaRef._fieldsProto.description.stringValue,
+    cost: sodaRef._fieldsProto.cost.stringValue,
+    max: sodaRef._fieldsProto.max.integerValue,
+    remaining: newRemaining
+  };
+
   db.collection("Soda-Lineup").doc(`${docName}`).update({
     remaining: newRemaining
   });
   // Will need to download a json file depicting the soda
   res.send({
     "code": 200,
-    "msg": "Success"
+    "data": purchasedSoda
   });
   return;
 });
