@@ -4,7 +4,6 @@ const request = supertest(app);
 
 describe("GET /sodas ", () => {
   test("responds with the array of sodas", async () => {
-    // await new Promise((r) => setTimeout(r, 1500));
     const response = await request.get("/sodas");
     const data = JSON.parse(response.text);
     expect(data.code).toEqual(200);
