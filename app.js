@@ -6,8 +6,6 @@ const jwt = require("jsonwebtoken");
 const env = require("dotenv");
 const admin = require('firebase-admin');
 const auth = require("./middleware/auth");
-// const { createRequire } = require("module");
-// const require = createRequire(import.meta.url);
 const app = express();
 
 // Load in .ENV file contents
@@ -74,8 +72,7 @@ app.get('/sodas', async (req, res) => {
     return;
 });
 
-
-// Will decrease the quantity of remaining sodas by one and download the json file
+// Will decrease the quantity of remaining sodas by one and return the soda that was "purchased"
 app.post('/soda', async (req, res) => {
   if (!req.body.productName) {
     res.status(400).send({
@@ -91,12 +88,18 @@ app.post('/soda', async (req, res) => {
     });
     return;
   }
+  if (parseInt(sodaRef._fieldsProto.remaining.integerValue) === 0) {
+    res.status(201).send({
+      "msg": "Soda is out of stock"
+    });
+    return;
+  }
   const newRemaining = sodaRef._fieldsProto.remaining.integerValue - 1;
   const purchasedSoda = {
     productName: sodaRef._fieldsProto.productName.stringValue,
     description: sodaRef._fieldsProto.description.stringValue,
     cost: sodaRef._fieldsProto.cost.stringValue,
-    max: sodaRef._fieldsProto.max.integerValue,
+    max: parseInt(sodaRef._fieldsProto.max.integerValue),
     remaining: newRemaining
   };
 
@@ -109,7 +112,7 @@ app.post('/soda', async (req, res) => {
   return;
 });
 
-// Will accept password and, if correct, return a web token which is needed to access the admin page and fetch the rest of the admin endpoints
+// Will accept password and, if correct, return a web token which is needed to access the admin page and access the remaining admin endpoints
 app.post("/login", async (req, res) => {
   if (!req.body.password) {
     res.status(400).send({
@@ -141,7 +144,7 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// Will decrease the quantity of remaining sodas by one and download the json file
+// Will increment the remaining sodas by the quantity provided unless it overflows
 app.post('/restock', auth, async (req, res) => {
   if (!req.body.productName || !req.body.quantity) {
     res.status(400).send({
@@ -158,6 +161,7 @@ app.post('/restock', auth, async (req, res) => {
     return;
   }
   if (parseInt(sodaRef._fieldsProto.remaining.integerValue) + req.body.quantity > sodaRef._fieldsProto.max.integerValue) {
+
     res.status(402).send({
       "msg": "Cannot restock by that amount for it will overflow"
     })
@@ -180,7 +184,7 @@ app.post('/restock', auth, async (req, res) => {
   return;
 });
 
-// Will decrease the quantity of remaining sodas by one and download the json file
+// Will update the product by deleting the old one and creating a new one with the updated info
 app.post('/product-update', auth, async (req, res) => {
   if (!req.body.productName || !req.body.newProductName || !req.body.newCost || !req.body.newDescription || !req.body.newMax) {
     res.status(400).send({
@@ -213,6 +217,36 @@ app.post('/product-update', auth, async (req, res) => {
   return;
 });
 
+// Will create a new product. Note that the remaining quantity will start at 0
+app.post('/new-product', auth, async (req, res) => {
+  if (!req.body.productName || !req.body.cost || !req.body.description || !req.body.max) {
+    res.status(400).send({
+      "msg": "Need productName, description, cost, and max"
+    });
+    return;
+  }
+  const docName = req.body.productName.toLowerCase();
+  const sodaRef = await db.collection("Soda-Lineup").doc(`${docName}`).get();
+  if (sodaRef.exists) {
+    res.status(401).send({
+      "msg": "A soda with that name already exists"
+    });
+    return;
+  }
+  const newSoda = {
+    productName: req.body.productName,
+    description: req.body.description,
+    cost: req.body.cost,
+    max: req.body.max,
+    remaining: 0
+  };
+  await db.collection("Soda-Lineup").doc(`${docName}`).set(newSoda);
+  res.status(200).send({
+    "data": newSoda
+  });
+  return;
+});
+
 // Will remove the product from the database
 app.delete('/product-removal', auth, async (req, res) => {
   if (!req.body.productName) {
@@ -235,7 +269,5 @@ app.delete('/product-removal', auth, async (req, res) => {
   });
   return;
 });
-
-
 
 module.exports = app;
