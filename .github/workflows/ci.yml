@@ -1,4 +1,6 @@
 name: CI
+env: 
+  VENDING_FIREBASE_KEY: ${{ secrets.VENDING_FIREBASE_KEY }} 
 on:
   push:
     branches: 
