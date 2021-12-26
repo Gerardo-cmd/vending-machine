@@ -189,8 +189,8 @@ const VendingMachine = () => {
   };
 
   return (
-    <div id="page">
-      <div className="row App-header">
+    <div id="page" className="container-fluid">
+      <div className="App-header">
         <div className="col-sm-4" />
         <div className="col-sm-4">
           <h1>ColaCo</h1>
