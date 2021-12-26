@@ -102,7 +102,7 @@ const AdminVendingMachine = () => {
         <div className="col-sm-4" />
       </div>
       <div className="row">
-        <div className="col-md-8 col-sm-8 col-8 row">  
+        <div style={{marginTop: "15px"}} className="col-sm-8 row">  
           <div className="col-1" />
           <div className="col-10" id="glass">
             {loading ? <CircularProgress /> : 
@@ -134,9 +134,9 @@ const AdminVendingMachine = () => {
           </div>
           <div className="col-1" />
         </div>
-        <div className="col-md-4 col-sm-4 col-4">
+        <div style={{marginTop: "15px"}} className="col-sm-4 row">
           <div className="col-1" />
-          <div className="col-10 row" >
+          <div className="col-10" >
             <Box className="text-center" sx={{paddingTop: "10px", paddingBottom: "10px", paddingLeft: "5px", paddingRight: "5px", background: "white"}}>
               <div style={{color: "black"}} className="row">
                 {soda === false ? <h1>Select a soda</h1> : <h1>{soda.productName}</h1>}

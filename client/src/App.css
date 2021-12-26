@@ -39,7 +39,9 @@
 
 #glass {
   background: #282c34;
-  min-height: 100vh;
+  min-height: 90vh;
+  max-height: 600px;
+  overflow-y: scroll;
 }
 
 #page {

@@ -52,7 +52,7 @@ const card = (productName, description, cost, code, remaining, max, admin, sendR
 
 const SodaCard = (props) => {
   return (
-      <Card style={{height:"250px", margin: "5px", boxShadow: `0 0 10px 2px black`}} variant="outlined">
+      <Card style={{height:"250px", margin: "3px", boxShadow: `0 0 10px 2px black`}} variant="outlined">
         {card(props.productName, props.description, props.cost, props.code, props.remaining, props.max, props.admin, props.callbackFunction)}
       </Card>
   );
