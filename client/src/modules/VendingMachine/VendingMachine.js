@@ -189,8 +189,8 @@ const VendingMachine = () => {
   };
 
   return (
-    <div id="page">
-      <div className="row App-header">
+    <div id="page" className="container-fluid">
+      <div className="App-header">
         <div className="col-sm-4" />
         <div className="col-sm-4">
           <h1>ColaCo</h1>
@@ -198,7 +198,7 @@ const VendingMachine = () => {
         <div className="col-sm-4" />
       </div>
       <div className="row">
-        <div className="col-md-8 col-sm-8 col-8 row">  
+        <div style={{marginTop: "15px"}} className="col-sm-8 row">  
           <div className="col-1" />
           <div className="col-10" id="glass">
             {loading ? <CircularProgress /> : 
@@ -229,12 +229,11 @@ const VendingMachine = () => {
           </div>
           <div className="col-1" />
         </div>
-        <div className="col-md-4 col-sm-4 col-4">
+        <div style={{marginTop: "15px"}} className="col-sm-4 row">
           <div className="col-1" />
           <div className="col-10" >
             <Box className="text-center userBox" sx={{paddingTop: "10px", paddingBottom: "10px", paddingLeft: "5px", paddingRight: "5px"}}>
               <TextField id="choice" onChange={handleChoiceChange} disabled variant="outlined" value={choice} name="choice" />
-              
               <div style={{marginTop: "10px"}} className="keypad row">
                 <div className="col-4">
                   <div className="row">
