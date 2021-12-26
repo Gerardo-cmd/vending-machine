@@ -4,7 +4,9 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Box, Button, Modal, TextField, Typography } from '@mui/material';
 import RestockForm from '../RestockForm/RestockForm';
+import NewSodaCard from '../NewSodaCard/NewSodaCard';
 import SodaCard from '../SodaCard/SodaCard';
+
 
 const style = {
   position: 'absolute',
@@ -92,6 +94,10 @@ const AdminVendingMachine = () => {
     return;
   };
 
+  const handleAddNewProduct = () => {
+    console.log("New soda added!")
+  };
+
   return (
     <div id="page" className="container-fluid">
       <div className="row App-header">
@@ -113,19 +119,38 @@ const AdminVendingMachine = () => {
                   {sodas.sort((a, b) => { //Puts them in alphabetical order
                     return (a.productName > b.productName ? 1 : -1)
                   }).map((soda, index) => {
-                    return (
+                    
+                    return (index === sodas.length - 1 ?
+                      <>
+                        <div key={index} className="col-lg-3 col-md-4 col-sm-6">
+                          <SodaCard
+                            productName={soda.productName} 
+                            description={soda.description} 
+                            cost={soda.cost}
+                            code={index+1}
+                            remaining={soda.remaining}
+                            max={soda.max}
+                            admin={true}
+                            callbackFunction={handleRestockSelection}
+                          />
+                        </div>
+                        <div className="col-lg-3 col-md-4 col-sm-6">
+                          <NewSodaCard key={index+1} callbackFunction={handleAddNewProduct} />
+                        </div>
+                      </>
+                      :
                       <div key={index} className="col-lg-3 col-md-4 col-sm-6">
-                        <SodaCard
-                          productName={soda.productName} 
-                          description={soda.description} 
-                          cost={soda.cost}
-                          code={index+1}
-                          remaining={soda.remaining}
-                          max={soda.max}
-                          admin={true}
-                          callbackFunction={handleRestockSelection}
-                        />
-                      </div>
+                          <SodaCard
+                            productName={soda.productName} 
+                            description={soda.description} 
+                            cost={soda.cost}
+                            code={index+1}
+                            remaining={soda.remaining}
+                            max={soda.max}
+                            admin={true}
+                            callbackFunction={handleRestockSelection}
+                          />
+                        </div>
                     );
                   })}
                 </div>

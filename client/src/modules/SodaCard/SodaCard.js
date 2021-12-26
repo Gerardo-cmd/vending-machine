@@ -14,7 +14,7 @@ const style = {
     p: 4
   };
 
-const card = (productName, description, cost, code, remaining, max, admin, sendRestockData = (() => {})) => {
+const card = (productName, description, cost, code, remaining, max, admin = false, sendRestockData = (() => {})) => {
     if (code.toString().length === 1) {
         let newCode = "0" + code.toString();
         code = newCode;
@@ -39,8 +39,10 @@ const card = (productName, description, cost, code, remaining, max, admin, sendR
             </Typography>
             {
                 admin ? 
-                <div>
-                    <Button sx={{background: "cyan", width: "75px", fontSize: "10px"}} variant="outlined" onClick={() => sendRestockData({productName, description, cost, remaining, max})}>Restock</Button>
+                <div className="container-fluid text-center">
+                    <div className="row">
+                        <Button sx={{background: "cyan", width: "75px", fontSize: "10px"}} variant="outlined" onClick={() => sendRestockData({productName, description, cost, remaining, max})}>Restock</Button>
+                    </div>
                 </div> 
                 :
                 ""
