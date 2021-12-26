@@ -5,9 +5,10 @@ import {
   Route
 } from 'react-router-dom';
 import './App.css';
+import { createTheme, ThemeProvider } from '@mui/material';
 import VendingMachine from './modules/VendingMachine/VendingMachine';
 import Error from './modules/Error/Error';
-import { createTheme, ThemeProvider } from '@mui/material';
+import AdminVendingMachine from './modules/AdminVendingMachine/AdminVendingMachine';
 
 const theme = createTheme({
   palette: {
@@ -26,6 +27,7 @@ const App = () => {
       <ThemeProvider theme={theme}>
         <Routes>
           <Route path="/" element={<VendingMachine />} />
+          <Route path="/admin" element={<AdminVendingMachine />} />
           <Route path="/error" element={<Error />} />
         </Routes>
       </ThemeProvider>

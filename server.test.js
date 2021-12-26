@@ -163,14 +163,11 @@ describe("POST /new-product ", () => {
     expect(data.msg).toEqual("A soda with that name already exists");
     return;
   });
-  test("responds with code 200 and creates the new product when authorized, required fields are present, and soda does not exist yet", async () => {
-    //Create it
+  test("responds with code 200 and creates new product when authorized, required fields are present, and soda does not exist yet", async () => {
     const response = await request.post("/new-product").set('Authorization', 'bearer ' + process.env.TOKEN).send({productName: "New Soda", cost: "2 dollar US", description: "This soda is new and hopefully will taste good", max: 25});
     expect(response.statusCode).toEqual(200);
-    //Restock it with 25
     await request.post("/restock").set('Authorization', 'bearer ' + process.env.TOKEN).send({productName: "New Soda", quantity: 25});
     await new Promise((r) => setTimeout(r, 100));
-    //Buy a soda
     const newResponse = await request.post("/soda").send({productName: "New Soda"});
     const newData = JSON.parse(newResponse.text).data;
     expect(newResponse.statusCode).toEqual(200);
@@ -179,7 +176,6 @@ describe("POST /new-product ", () => {
     expect(newData.cost).toEqual("2 dollar US");
     expect(newData.max).toEqual(25);
     expect(newData.remaining).toEqual(24);
-
     await request.delete("/product-removal").set('Authorization', 'bearer ' + process.env.TOKEN).send({productName: "New Soda"});
     return;
   });
@@ -206,13 +202,10 @@ describe("POST /product-removal ", () => {
     return;
   });
   test("responds with code 200 and removes the product when authorized, required fields are present, and soda exists", async () => {
-    //Create it
     const response = await request.post("/new-product").set('Authorization', 'bearer ' + process.env.TOKEN).send({productName: "New Soda", cost: "2 dollar US", description: "This soda is new and hopefully will taste good", max: 25});
     expect(response.statusCode).toEqual(200);
-    //Restock it with 25
     await request.post("/restock").set('Authorization', 'bearer ' + process.env.TOKEN).send({productName: "New Soda", quantity: 25});
     await new Promise((r) => setTimeout(r, 100));
-    //Buy a soda and make sure it exists
     const newResponse = await request.post("/soda").send({productName: "New Soda"});
     expect(newResponse.statusCode).toEqual(200);
     await request.delete("/product-removal").set('Authorization', 'bearer ' + process.env.TOKEN).send({productName: "New Soda"});

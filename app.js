@@ -43,33 +43,33 @@ app.get('/', (req, res) => {
 
 // Will return all the sodas
 app.get('/sodas', async (req, res) => {
-    const firebaseData = (await db.collection("Soda-Lineup").get()).docs;
-    if (firebaseData.length === 0) {
-        res.status(201).send({
-            "msg": "There are no soda products selling right now"
-        });
-        return;
-    }
-    let result = [];
-    firebaseData.forEach((soda) => {
-        result.push({
-            productName: soda._fieldsProto.productName.stringValue,
-            description: soda._fieldsProto.description.stringValue,
-            cost: soda._fieldsProto.cost.stringValue,
-            max: soda._fieldsProto.max.integerValue,
-            remaining: soda._fieldsProto.remaining.integerValue
-        });
-    })
-    if (firebaseData.length >= 0) {
-        res.status(200).send({
-            "data": result
-        });
-        return;
-    }
-    res.status(500).send({
-        "msg": "Something went wrong on our end"
+  const firebaseData = (await db.collection("Soda-Lineup").get()).docs;
+  if (firebaseData.length === 0) {
+    res.status(201).send({
+      "msg": "There are no soda products selling right now"
     });
     return;
+  }
+  let result = [];
+  firebaseData.forEach((soda) => {
+    result.push({
+      productName: soda._fieldsProto.productName.stringValue,
+      description: soda._fieldsProto.description.stringValue,
+      cost: soda._fieldsProto.cost.stringValue,
+      max: soda._fieldsProto.max.integerValue,
+      remaining: soda._fieldsProto.remaining.integerValue
+    });
+  })
+  if (firebaseData.length >= 0) {
+    res.status(200).send({
+      "data": result
+    });
+    return;
+  }
+  res.status(500).send({
+    "msg": "Something went wrong on our end"
+  });
+  return;
 });
 
 // Will decrease the quantity of remaining sodas by one and return the soda that was "purchased"
@@ -160,14 +160,13 @@ app.post('/restock', auth, async (req, res) => {
     });
     return;
   }
-  if (parseInt(sodaRef._fieldsProto.remaining.integerValue) + req.body.quantity > sodaRef._fieldsProto.max.integerValue) {
-
+  if (parseInt(sodaRef._fieldsProto.remaining.integerValue) + parseInt(req.body.quantity) > sodaRef._fieldsProto.max.integerValue) {
     res.status(402).send({
       "msg": "Cannot restock by that amount for it will overflow"
     })
     return;
   }
-  const newRemaining = parseInt(sodaRef._fieldsProto.remaining.integerValue) + req.body.quantity;
+  const newRemaining = parseInt(sodaRef._fieldsProto.remaining.integerValue) + parseInt(req.body.quantity);
   const purchasedSoda = {
     productName: sodaRef._fieldsProto.productName.stringValue,
     description: sodaRef._fieldsProto.description.stringValue,

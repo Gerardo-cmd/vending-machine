@@ -1,20 +1,39 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
+import KeyIcon from '@mui/icons-material/Key';
 import CircularProgress from '@mui/material/CircularProgress';
-import { Box, Button, TextField } from '@mui/material';
+import { Alert, Box, Button, Input, Modal, TextField, Typography } from '@mui/material';
 import SodaCard from '../SodaCard/SodaCard';
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 250,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4
+};
+
 const VendingMachine = () => {
   const navigate = useNavigate();
   const [sodas, setSodas] = useState([]);
   const [loading, setLoading] = useState(false);
   const [choice, setChoice] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [reload, triggerReload] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [password, setPassword] = useState("");
+  const [wrongPassword, setWrongPassword] = useState(false);
+
   useEffect(() => {
     setLoading(true);
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
     headers.append('Accept', 'application/json');
-    fetch("http://localhost:5000/sodas", {
+    fetch("/sodas", {
       method: 'GET',
       mode: 'cors',
       headers: headers
@@ -30,7 +49,7 @@ const VendingMachine = () => {
       navigate("/error");
       console.log(e);
     });
-  }, [navigate]);
+  }, [navigate, reload]);
 
   const handleChoiceChange = (e) => {
     setChoice(e.target.value.trim());
@@ -74,14 +93,14 @@ const VendingMachine = () => {
     // Making sure it is in the range and not "00"
     if (choice.split("")[0] === "0") {
       if ((parseInt(choice.split("")[1]) > sodas.length) || (parseInt(choice.split("")[1]) === 0)) {
-        setErrorMessage("Invalid Input");
+        setErrorMessage("Please enter one of the valid codes from the sodas available");
         setChoice("");
         return;
       }
     }
     else {
       if (parseInt(choice) > sodas.length) {
-        setErrorMessage("Invalid Input");
+        setErrorMessage("Please enter one of the valid codes from the sodas available");
         setChoice("");
         return;
       }
@@ -89,7 +108,7 @@ const VendingMachine = () => {
     let index = choice.split("")[0] === "0" ? (parseInt(choice.split("")[1]) - 1) : (parseInt(choice) - 1);
     const productName = sodas[index].productName;
     if (sodas[index].remaining === "0") {
-      setErrorMessage("Out of stock: Please wait for an admin to restock");
+      setErrorMessage("Please wait for an admin to restock");
       setChoice("");
       return;
     }
@@ -97,7 +116,7 @@ const VendingMachine = () => {
     headers.append('Content-Type', 'application/json');
     headers.append('Accept', 'application/json');
     const data = {productName};
-    fetch("http://localhost:5000/soda", {
+    fetch("/soda", {
       method: 'POST',
       mode: 'cors',
       headers: headers,
@@ -114,12 +133,59 @@ const VendingMachine = () => {
       }
       setChoice("");
       download(filename, JSON.stringify(productData));
+      triggerReload(!reload);
     })
     .catch((e) => {
       navigate("/error");
       console.log(e);
     });
     return;
+  };
+
+  const handleOpen = () => setOpen(true);
+
+  const handleClose = () => {
+    setPassword("");
+    setWrongPassword(false);
+    setOpen(false);
+    return;
+  }
+
+  const handlePasswordChange = (e) => {
+    setWrongPassword(false);
+    setPassword(e.target.value.trim());
+    return;
+  };
+
+  const handlePasswordSubmit = (e) => {
+    e.preventDefault();
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Accept', 'application/json');
+    const data = {password: e.target.password.value};
+    fetch("/login", {
+      method: 'POST',
+      mode: 'cors',
+      headers: headers,
+      body: JSON.stringify(data),
+    })
+    .then((response) => {
+      if (response.status === 401) {
+        setWrongPassword(true);
+        setPassword("");
+        throw new Error("Password was rejected");
+      }
+      return response.json();
+    })
+    .then((response) => {
+      setPassword("");
+      localStorage.setItem("admin-token", response.data.token);
+      navigate("/admin");
+    })
+    .catch((e) => {
+      setPassword("");
+      console.log(e);
+    });
   };
 
   return (
@@ -151,6 +217,8 @@ const VendingMachine = () => {
                           cost={soda.cost}
                           code={index+1}
                           remaining={soda.remaining}
+                          max={soda.max}
+                          admin={false}
                         />
                       </div>
                     );
@@ -164,9 +232,10 @@ const VendingMachine = () => {
         <div className="col-md-4 col-sm-4 col-4">
           <div className="col-1" />
           <div className="col-10" >
-            <Box id="userBox" className="text-center" sx={{paddingTop: "10px", paddingBottom: "10px", paddingLeft: "5px", paddingRight: "5px"}}>
-              <TextField id="choice" onChange={handleChoiceChange} disabled error={errorMessage === "" ? false : true} helperText={errorMessage === "" ? "" : errorMessage} variant="outlined" value={choice} name="choice" />
-              <div className="keypad row">
+            <Box className="text-center userBox" sx={{paddingTop: "10px", paddingBottom: "10px", paddingLeft: "5px", paddingRight: "5px"}}>
+              <TextField id="choice" onChange={handleChoiceChange} disabled variant="outlined" value={choice} name="choice" />
+              
+              <div style={{marginTop: "10px"}} className="keypad row">
                 <div className="col-4">
                   <div className="row">
                     <button onClick={keyPadNumClick} value={"1"}>1</button>
@@ -213,8 +282,44 @@ const VendingMachine = () => {
                   </div>
                 </div>
               </div>
-              <div className="row">
+              <div style={{marginTop: "10px"}} className="row">
                 <Button variant="contained" disabled={choice.length === 2 ? false : true} onClick={onPurchase}>Purchase</Button>
+              </div>
+              <div style={{marginTop: "10px"}} className="row">
+                <Button sx={{background: "cyan"}} variant="contained" onClick={handleOpen}><KeyIcon /></Button>
+                <Modal
+                  open={open}
+                  onClose={handleClose}
+                  aria-labelledby="modal-modal-title"
+                  aria-describedby="modal-modal-description"
+                >
+                  <Box className="text-center" component="form" onSubmit={handlePasswordSubmit} sx={style}>
+                    <div className="row">
+                      <Typography sx={{marginTop: "5px", marginBottom: "5px"}} label="Admin password" variant="outlined">Admin Password</Typography>
+                    </div>
+                    <div className="row">
+                      <Input style={{marginTop: "5px", marginBottom: "5px"}} id="choice" error={wrongPassword} type="password" onChange={handlePasswordChange} label="Admin password" variant="outlined" value={password} name="password" />
+                    </div>
+                    <div className="row">
+                      <Input type="submit" disabled={password.trim().length === 0 ? true : false} style={{marginTop: "5px", marginBottom: "5px"}} variant="outlined" value="submit"/>
+                    </div>
+                  </Box>
+                </Modal>
+                <Modal
+                  open={errorMessage !== ""}
+                  onClose={() => setErrorMessage("")}
+                  aria-labelledby="modal-modal-title"
+                  aria-describedby="modal-modal-description"
+                >
+                  <Box className="text-center" component="span" sx={style}>
+                    <div className="row">
+                      <Typography sx={{marginTop: "5px", marginBottom: "5px", color: "red"}}>{errorMessage === "Please enter one of the valid codes from the sodas available" ? "Invalid Input" : "Out of stock"}</Typography>
+                    </div>
+                    <div className="row">
+                      <Typography sx={{marginTop: "5px", marginBottom: "5px"}}>{errorMessage}</Typography>
+                    </div>
+                  </Box>
+                </Modal>
               </div>
             </Box>
           </div>
