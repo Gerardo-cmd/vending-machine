@@ -28,7 +28,7 @@ const card = (addNewCard) => {
 
 const NewSodaCard = (props) => {
   return (
-      <Card style={{height:"250px", margin: "3px", boxShadow: `0 0 10px 2px black`}} variant="outlined">
+      <Card style={{height:"275px", margin: "3px", boxShadow: `0 0 10px 2px black`}} variant="outlined">
         {card(props.callbackFunction)}
       </Card>
   );

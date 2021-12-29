@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import KeyIcon from '@mui/icons-material/Key';
 import CircularProgress from '@mui/material/CircularProgress';
-import { Alert, Box, Button, Input, Modal, TextField, Typography } from '@mui/material';
+import {  Box, Button, Input, Modal, TextField, Typography } from '@mui/material';
 import SodaCard from '../SodaCard/SodaCard';
 
 const style = {
@@ -125,7 +125,7 @@ const VendingMachine = () => {
     .then((response) => {
       return response.json();
     })
-    .then(function (response) {
+    .then((response) => {
       const filename = response.data.productName.replace(" ", "") + ".json";
       const productData = {
         productName: response.data.productName,
@@ -182,9 +182,9 @@ const VendingMachine = () => {
       localStorage.setItem("admin-token", response.data.token);
       navigate("/admin");
     })
-    .catch((e) => {
+    .catch((error) => {
       setPassword("");
-      console.log(e);
+      console.log(error);
     });
   };
 

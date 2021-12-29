@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { Box, Input, Typography } from '@mui/material';
 
-const RestockForm = (props) => {
+const EditSodaForm = (props) => {
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -14,26 +14,25 @@ const RestockForm = (props) => {
 
     return (
         <Box className="col text-center" sx={{background: "white", color: "black", width: "125px"}} component="form" onSubmit={props.handleSubmit}>
-            <div style={{marginBottom: "10px"}} className="row col">
-                {props.max === props.remaining ? <Typography className="col">FULL</Typography> : <Typography className="col">Stock up to {props.max-props.remaining} more</Typography>}
+            <div style={{marginBottom: "10px", fontSize: "12px"}} className="row col">
+                <Typography className="col">Edit cost</Typography>
             </div>
             <div className="row">
                 <Input
-                    className="col"
                     sx={{width: "100px"}}
                     variant="contained"
                     required
-                    type="text"
-                    id="quantity"
-                    name="quantity"
-                    label="Quantity"
+                    type="number"
+                    label="Cost"
+                    name="cost"
+                    placeholder={props.cost}
                 />
             </div>
             <div className="row">
-                <Input sx={{marginTop: "15px"}} type="submit" value="Submit" />
+                <Input sx={{marginTop: "25px"}} type="submit" value="Submit" />
             </div>
         </Box>
     );
 }
 
-export default RestockForm;
+export default EditSodaForm;

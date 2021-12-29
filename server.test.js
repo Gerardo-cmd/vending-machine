@@ -65,19 +65,19 @@ describe("POST /login ", () => {
 
 describe("POST /product-update ", () => {
   test("responds with code 400 when not authorized", async () => {
-    const response = await request.post("/product-update").send({productName: "Pop", newProductName: "New Soda", newCost: "2 dollar US", newDescription: "This is not authorized", newMax: 100});
+    const response = await request.post("/product-update").send({productName: "Pop", newCost: "2 dollar US"});
     expect(response.statusCode).toEqual(400);
     return;
   });
   test("responds with code 400 when missing the appropriate body", async () => {
-    const response = await request.post("/product-update").set('Authorization', 'bearer ' + process.env.TOKEN).send({productName: "missing body fields"});
+    const response = await request.post("/product-update").set('Authorization', 'bearer ' + process.env.TOKEN).send({productName: "missing newCost"});
     const data = JSON.parse(response.text);
     expect(response.statusCode).toEqual(400);
-    expect(data.msg).toEqual("Need productName, newProductName, description, cost, and max");
+    expect(data.msg).toEqual("Need productName and newCost");
     return;
   });
   test("responds with code 401 when soda is not found", async () => {
-    const response = await request.post("/product-update").set('Authorization', 'bearer ' + process.env.TOKEN).send({productName: "I don't exist", newProductName: "New Soda", newCost: "2 dollar US", newDescription: "This will not work", newMax: 100});
+    const response = await request.post("/product-update").set('Authorization', 'bearer ' + process.env.TOKEN).send({productName: "I don't exist", newCost: "2 dollars US"});
     const data = JSON.parse(response.text);
     expect(response.statusCode).toEqual(401);
     expect(data.msg).toEqual("Soda was not found");
@@ -86,16 +86,15 @@ describe("POST /product-update ", () => {
   test("responds with code 200 when authorized and all fields are present", async () => {
     const sodas = await request.get("/sodas");
     const testSoda = JSON.parse(sodas.text).data[0];
-    const response = await request.post("/product-update").set('Authorization', 'bearer ' + process.env.TOKEN).send({productName: testSoda.productName, newProductName: "New Soda", newCost: testSoda.cost, newDescription: testSoda.description, newMax: parseInt(testSoda.max) + 50});
+    const response = await request.post("/product-update").set('Authorization', 'bearer ' + process.env.TOKEN).send({productName: testSoda.productName, newCost: "1000 dollars US"});
     const alteredSoda = JSON.parse(response.text).data;
+    console.log(alteredSoda);
     expect(response.statusCode).toEqual(200);
-    expect(alteredSoda.productName).toEqual("New Soda");
-    expect(alteredSoda.max).toEqual(parseInt(testSoda.max)+50);
-    const lastResponse = await request.post("/product-update").set('Authorization', 'bearer ' + process.env.TOKEN).send({productName: "New Soda", newProductName: testSoda.productName, newCost: testSoda.cost, newDescription: testSoda.description, newMax: parseInt(testSoda.max)});
+    expect(alteredSoda.cost).toEqual("1000 dollars US");
+    const lastResponse = await request.post("/product-update").set('Authorization', 'bearer ' + process.env.TOKEN).send({productName: testSoda.productName, newCost: testSoda.cost});
     const originalSoda = JSON.parse(lastResponse.text).data;
     expect(lastResponse.statusCode).toEqual(200);
-    expect(originalSoda.productName).toEqual(testSoda.productName);
-    expect(originalSoda.max).toEqual(parseInt(testSoda.max));
+    expect(originalSoda.cost).toEqual(testSoda.cost);
     return;
   });
 });
@@ -164,26 +163,26 @@ describe("POST /new-product ", () => {
     return;
   });
   test("responds with code 200 and creates new product when authorized, required fields are present, and soda does not exist yet", async () => {
-    const response = await request.post("/new-product").set('Authorization', 'bearer ' + process.env.TOKEN).send({productName: "New Soda", cost: "2 dollar US", description: "This soda is new and hopefully will taste good", max: 25});
+    const response = await request.post("/new-product").set('Authorization', 'bearer ' + process.env.TOKEN).send({productName: "Gerardo's Unit Testing Soda", cost: "2 dollar US", description: "This soda is new and hopefully will taste good", max: 25});
     expect(response.statusCode).toEqual(200);
-    await request.post("/restock").set('Authorization', 'bearer ' + process.env.TOKEN).send({productName: "New Soda", quantity: 25});
+    await request.post("/restock").set('Authorization', 'bearer ' + process.env.TOKEN).send({productName: "Gerardo's Unit Testing Soda", quantity: 25});
     await new Promise((r) => setTimeout(r, 100));
-    const newResponse = await request.post("/soda").send({productName: "New Soda"});
+    const newResponse = await request.post("/soda").send({productName: "Gerardo's Unit Testing Soda"});
     const newData = JSON.parse(newResponse.text).data;
     expect(newResponse.statusCode).toEqual(200);
-    expect(newData.productName).toEqual("New Soda");
+    expect(newData.productName).toEqual("Gerardo's Unit Testing Soda");
     expect(newData.description).toEqual("This soda is new and hopefully will taste good");
     expect(newData.cost).toEqual("2 dollar US");
     expect(newData.max).toEqual(25);
     expect(newData.remaining).toEqual(24);
-    await request.delete("/product-removal").set('Authorization', 'bearer ' + process.env.TOKEN).send({productName: "New Soda"});
+    await request.delete("/product-removal").set('Authorization', 'bearer ' + process.env.TOKEN).send({productName: "Gerardo's Unit Testing Soda"});
     return;
   });
 });
 
 describe("POST /product-removal ", () => {
   test("responds with code 400 when not authorized", async () => {
-    const response = await request.delete("/product-removal").send({productName: "New Soda"});
+    const response = await request.delete("/product-removal").send({productName: "Gerardo's Unit Testing Soda"});
     expect(response.statusCode).toEqual(400);
     return;
   });
@@ -202,14 +201,14 @@ describe("POST /product-removal ", () => {
     return;
   });
   test("responds with code 200 and removes the product when authorized, required fields are present, and soda exists", async () => {
-    const response = await request.post("/new-product").set('Authorization', 'bearer ' + process.env.TOKEN).send({productName: "New Soda", cost: "2 dollar US", description: "This soda is new and hopefully will taste good", max: 25});
+    const response = await request.post("/new-product").set('Authorization', 'bearer ' + process.env.TOKEN).send({productName: "Gerardo's Unit Testing Soda", cost: "2 dollar US", description: "This soda is new and hopefully will taste good", max: 25});
     expect(response.statusCode).toEqual(200);
-    await request.post("/restock").set('Authorization', 'bearer ' + process.env.TOKEN).send({productName: "New Soda", quantity: 25});
+    await request.post("/restock").set('Authorization', 'bearer ' + process.env.TOKEN).send({productName: "Gerardo's Unit Testing Soda", quantity: 25});
     await new Promise((r) => setTimeout(r, 100));
-    const newResponse = await request.post("/soda").send({productName: "New Soda"});
+    const newResponse = await request.post("/soda").send({productName: "Gerardo's Unit Testing Soda"});
     expect(newResponse.statusCode).toEqual(200);
-    await request.delete("/product-removal").set('Authorization', 'bearer ' + process.env.TOKEN).send({productName: "New Soda"});
-    const lastResponse = await request.post("/soda").send({productName: "New Soda"});
+    await request.delete("/product-removal").set('Authorization', 'bearer ' + process.env.TOKEN).send({productName: "Gerardo's Unit Testing Soda"});
+    const lastResponse = await request.post("/soda").send({productName: "Gerardo's Unit Testing Soda"});
     expect(lastResponse.statusCode).toEqual(401);
     expect(JSON.parse(lastResponse.text).msg).toEqual("Soda was not found");
     return;
