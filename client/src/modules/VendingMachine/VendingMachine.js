@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import KeyIcon from '@mui/icons-material/Key';
 import CircularProgress from '@mui/material/CircularProgress';
-import { Alert, Box, Button, Input, Modal, TextField, Typography } from '@mui/material';
+import { Box, Button, Input, Modal, TextField, Typography } from '@mui/material';
 import SodaCard from '../SodaCard/SodaCard';
 
 const style = {
@@ -125,7 +125,7 @@ const VendingMachine = () => {
     .then((response) => {
       return response.json();
     })
-    .then(function (response) {
+    .then((response) => {
       const filename = response.data.productName.replace(" ", "") + ".json";
       const productData = {
         productName: response.data.productName,
@@ -182,9 +182,9 @@ const VendingMachine = () => {
       localStorage.setItem("admin-token", response.data.token);
       navigate("/admin");
     })
-    .catch((e) => {
+    .catch((error) => {
       setPassword("");
-      console.log(e);
+      console.log(error);
     });
   };
 
@@ -233,7 +233,7 @@ const VendingMachine = () => {
           <div className="col-1" />
           <div className="col-10" >
             <Box className="text-center userBox" sx={{paddingTop: "10px", paddingBottom: "10px", paddingLeft: "5px", paddingRight: "5px"}}>
-              <TextField id="choice" onChange={handleChoiceChange} disabled variant="outlined" value={choice} name="choice" />
+              <TextField className="choice" onChange={handleChoiceChange} disabled variant="outlined" value={choice} name="choice" />
               <div style={{marginTop: "10px"}} className="keypad row">
                 <div className="col-4">
                   <div className="row">
@@ -297,7 +297,7 @@ const VendingMachine = () => {
                       <Typography sx={{marginTop: "5px", marginBottom: "5px"}} label="Admin password" variant="outlined">Admin Password</Typography>
                     </div>
                     <div className="row">
-                      <Input style={{marginTop: "5px", marginBottom: "5px"}} id="choice" error={wrongPassword} type="password" onChange={handlePasswordChange} label="Admin password" variant="outlined" value={password} name="password" />
+                      <Input style={{marginTop: "5px", marginBottom: "5px"}} className="choice" error={wrongPassword} type="password" onChange={handlePasswordChange} label="Admin password" variant="outlined" value={password} name="password" />
                     </div>
                     <div className="row">
                       <Input type="submit" disabled={password.trim().length === 0 ? true : false} style={{marginTop: "5px", marginBottom: "5px"}} variant="outlined" value="submit"/>

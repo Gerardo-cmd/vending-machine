@@ -185,9 +185,9 @@ app.post('/restock', auth, async (req, res) => {
 
 // Will update the product by deleting the old one and creating a new one with the updated info
 app.post('/product-update', auth, async (req, res) => {
-  if (!req.body.productName || !req.body.newProductName || !req.body.newCost || !req.body.newDescription || !req.body.newMax) {
+  if (!req.body.productName || !req.body.newCost) {
     res.status(400).send({
-      "msg": "Need productName, newProductName, description, cost, and max"
+      "msg": "Need productName and newCost"
     });
     return;
   }
@@ -199,19 +199,19 @@ app.post('/product-update', auth, async (req, res) => {
     });
     return;
   }
-  const remaining = parseInt(req.body.newMax) < parseInt(sodaRef._fieldsProto.remaining.integerValue) ? parseInt(req.body.newMax) : parseInt(sodaRef._fieldsProto.remaining.integerValue);
-  const updatedSoda = {
-    productName: req.body.newProductName,
-    description: req.body.newDescription,
-    cost: req.body.newCost,
-    max: req.body.newMax,
-    remaining
+  await db.collection("Soda-Lineup").doc(`${docName}`).update({
+    cost: req.body.newCost
+  });
+  const newSodaRef = await db.collection('Soda-Lineup').doc(`${docName}`).get();
+  const newSoda = {
+    productName: newSodaRef._fieldsProto.productName.stringValue,
+    description: newSodaRef._fieldsProto.description.stringValue,
+    cost: newSodaRef._fieldsProto.cost.stringValue,
+    max: newSodaRef._fieldsProto.max.integerValue,
+    remaining: newSodaRef._fieldsProto.remaining.integerValue
   };
-  const newDocName = req.body.newProductName.toLowerCase();
-  await db.collection("Soda-Lineup").doc(`${docName}`).delete();
-  await db.collection("Soda-Lineup").doc(`${newDocName}`).set(updatedSoda);
   res.status(200).send({
-    "data": updatedSoda
+    "data": newSoda
   });
   return;
 });
