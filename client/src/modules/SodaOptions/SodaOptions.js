@@ -1,22 +1,5 @@
 import * as React from 'react';
-import Card from '@mui/material/Card';
-import { Box, Button, CardContent, TextField, Typography} from '@mui/material';
-
-const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    width: 250,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24
-  };
-
-const card = (productName, description, cost, code, remaining, max, sendRestockData = (() => {}), sendEditData = (() => {})) => {
-    
-    
-};
-
+import { Box, Button, Typography} from '@mui/material';
 
 const SodaOptions = (props) => {
     let code = props.code
@@ -45,10 +28,13 @@ const SodaOptions = (props) => {
                 <Typography sx={{ fontSize: 15, fontWeight: "bold"}}>Remaining: {props.remaining}</Typography>
             </div>
             <div className="row">
-                <Button sx={{background: "cyan", height: "30px", fontSize: "8px"}} variant="outlined" onClick={() => props.callbackRestock({productName: props.productName, description: props.description, cost: props.cost, remaining: props.remaining, max: props.max})}>Re-stock</Button>
+                <Button sx={{background: "cyan", height: "30px", fontSize: "8px", marginTop: "5px", marginBottom: "5px"}} variant="outlined" onClick={() => props.callbackRestock({productName: props.productName, description: props.description, cost: props.cost, remaining: props.remaining, max: props.max})}>Re-stock</Button>
             </div>
             <div className="row">
-                <Button sx={{background: "orange", height: "30px", fontSize: "8px"}} variant="outlined" onClick={() => props.callbackEdit({productName: props.productName, description: props.description, cost: props.cost, remaining: props.remaining, max: props.max})}>Edit Cost</Button>
+                <Button sx={{background: "orange", height: "30px", fontSize: "8px", marginTop: "5px", marginBottom: "5px"}} variant="outlined" onClick={() => props.callbackEdit({productName: props.productName, description: props.description, cost: props.cost, remaining: props.remaining, max: props.max})}>Edit Cost</Button>
+            </div>
+            <div className="row">
+                <Button sx={{background: "red", color: "white", height: "30px", fontSize: "8px", marginTop: "5px", marginBottom: "5px"}} variant="outlined" onClick={() => props.callbackRemove({productName: props.productName, description: props.description, cost: props.cost, remaining: props.remaining, max: props.max})}>Remove Soda</Button>
             </div>
         </Box>
     );

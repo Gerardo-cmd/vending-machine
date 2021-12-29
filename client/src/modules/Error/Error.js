@@ -21,7 +21,7 @@ const Error = () => {
           <div className="col-1" />
           <div className="col-10" >
             <Box id="userBox" className="text-center" disabled sx={{paddingTop: "10px", paddingBottom: "10px", paddingLeft: "5px", paddingRight: "5px"}}>
-              <TextField id="choice" disabled variant="outlined" name="choice" />
+              <TextField className="choice" disabled variant="outlined" name="choice" />
               <div className="keypad row">
                 <div className="col-4">
                   <div className="row">

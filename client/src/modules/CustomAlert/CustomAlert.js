@@ -25,7 +25,7 @@ const CustomAlert = (props) => {
                 <Typography sx={{marginTop: "5px", marginBottom: "5px", color: "red"}} label="Admin password" variant="outlined">{props.title}</Typography>
                 </div>
                 <div className="row">
-                <Typography style={{marginTop: "5px", marginBottom: "5px"}} id="choice">{props.description}</Typography>
+                <Typography style={{marginTop: "5px", marginBottom: "5px"}} className="choice">{props.description}</Typography>
                 </div>
             </Box>
         </Modal>
