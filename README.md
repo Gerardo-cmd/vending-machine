@@ -60,3 +60,12 @@ There are a total of 7 endpoints for this application. They are:
     - 200: Was successfull in removing the specified soda and returns a message stating that it was successfull.
     - 400: Either the user is unauthenticated (missing token) or missing necessary information from the body (productName).
     - 401: The name provided in the body could not be found in the database.
+
+User Interface:
+    - When using the application, it will start you will see a vending machine with the glass and sodas on the left side and the keypad panel and admin key on the right side. 
+    - Use the keypad to input the code corresponding to the soda you wish to purchase (01, 02, etc.) and press "Purchase". If it is a valid code and in stock, it will download a json file containing the details of the soda that was just purchased.
+    - You can click on the button with a key icon to be prompted with the admin password. Entering ti correctly will grant you an admin's view of the vending maching. The keypad will be gone and replaces with a white box instructing to select a soda. This white box will containe the forms you need to fill depending on the task you wish to complete.
+    - You will notice an extra "card" with a "plus" icon on the left side before the first soda. Clicking on the extra card will allow you to add a new soda by filling in the form that appears on the right and submitting. If the name is unique and all of the fields are filled, it will rerender the page with the newly-created soda included on the left side. If there are any errors, they will displayed via a popup.
+    - You may also select any of the sodas on the left side to make the right side fill with a card containing the details of the soda you selected and options to select from. These options include restocking, editing the price, and removing he soda from the vending machine.
+    - Clicking on any of the options will prompt a second form right below the first one. If you fill the required fields and submit, it will execute the task you selected. If there are any errors, they will displayed via a popup.
+    - To exit the admin's view of the vending machine, simply click on the "logout/exit" button on the right side.
