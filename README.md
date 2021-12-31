@@ -61,7 +61,7 @@ There are a total of 7 endpoints for this application. They are:
     - 400: Either the user is unauthenticated (missing token) or missing necessary information from the body (productName).
     - 401: The name provided in the body could not be found in the database.
 
-User Interface:
+- User Interface:
     - When using the application, it will start you will see a vending machine with the glass and sodas on the left side and the keypad panel and admin key on the right side. 
     - Use the keypad to input the code corresponding to the soda you wish to purchase (01, 02, etc.) and press "Purchase". If it is a valid code and in stock, it will download a json file containing the details of the soda that was just purchased.
     - You can click on the button with a key icon to be prompted with the admin password. Entering ti correctly will grant you an admin's view of the vending maching. The keypad will be gone and replaces with a white box instructing to select a soda. This white box will containe the forms you need to fill depending on the task you wish to complete.
