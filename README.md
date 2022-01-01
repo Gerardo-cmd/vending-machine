@@ -3,12 +3,16 @@
 Steps to run locally:
 1. git clone into an empty folder
 2. cd into the new folder you just cloned
-3. run "npm install"
-4. cd into client
-5. run "npm install" again
-6. cd ..
-7. run "npm run start"
-8. It should open automatically, but if not then go to localhost:3000.
+3. paste in the .env file that was sent in the email
+4. create a new folder "secrets" and paste the vending-machine json file that was sent in the email into the newly-created "secrets" folder
+6. run "npm install"
+7. cd into client
+8. run "npm install" again
+9. cd ..
+10. run "npm run start". The server will start listening on localhost:5000.
+11. Open a new or split terminal
+12. In the new terminal, cd into "client" and run "npm run start".
+13. It should open automatically, but if doesn't then go to localhost:3000.
 
 There are a total of 7 endpoints for this application. They are:
 - GET /sodas
