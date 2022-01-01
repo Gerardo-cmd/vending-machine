@@ -2,12 +2,13 @@
 # ColaCo's vending-machine
 Steps to run locally:
 1. git clone into an empty folder
-2. run "npm install"
-3. cd into client
-4. run "npm install" again
-5. cd ..
-6. run "npm run start"
-7. It should open automatically, but if not then go to localhost:3000.
+2. cd into the new folder you just cloned
+3. run "npm install"
+4. cd into client
+5. run "npm install" again
+6. cd ..
+7. run "npm run start"
+8. It should open automatically, but if not then go to localhost:3000.
 
 There are a total of 7 endpoints for this application. They are:
 - GET /sodas
