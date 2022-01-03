@@ -27,6 +27,10 @@ const AdminVendingMachine = () => {
 
   useEffect(() => {
     setLoading(true);
+    const token = localStorage.getItem("admin-token");
+    if (token == null) {
+      navigate("/");
+    }
     let headers = new Headers();
     headers.append('Content-Type', 'application/json');
     headers.append('Accept', 'application/json');
@@ -122,6 +126,10 @@ const AdminVendingMachine = () => {
     })
     .then((response) => {
       setRestockSoda(false);
+      setNewSoda(false);
+      setEditSoda(false);
+      setRemovingSoda(false);
+      setSelectedSoda(false);
       triggerReload(!reload);
       return;
     })
@@ -178,6 +186,7 @@ const AdminVendingMachine = () => {
       setRestockSoda(false);
       setNewSoda(false);
       setEditSoda(false);
+      setRemovingSoda(false);
       setSelectedSoda(false);
       triggerReload(!reload);
       return;
@@ -237,6 +246,7 @@ const AdminVendingMachine = () => {
       setRestockSoda(false);
       setNewSoda(false);
       setEditSoda(false);
+      setRemovingSoda(false);
       setSelectedSoda(false);
       triggerReload(!reload);
       return;
