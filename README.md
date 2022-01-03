@@ -2,8 +2,8 @@
 Steps to run locally:
 1. git clone into an empty folder
 2. In the terminal, cd into the new folder you just cloned
-3. Paste in the .env file that was sent in the email
-4. Create a new folder "secrets" and paste the vending-machine json file that was sent in the email into the newly-created "secrets" folder
+3. Create a file called ".env" and pase in the content from the env-content pdf file (attached in the latest email)
+4. Create a new folder "secrets". In the secrets folder create a file called "vending-machine-81e32-firebase-adminsdk-ftml1-bef0d2a34f.json". Once this json file is created, paste the content from the json-content pdf file (attached in the latest email).
 5. Run "npm install" in the terminal
 6. Run "npm run start" in the terminal. The server will start listening on localhost:5000.
 7. Open a second or split terminal. The following steps will take place in the new terminal.
