@@ -88,7 +88,6 @@ describe("POST /product-update ", () => {
     const testSoda = JSON.parse(sodas.text).data[0];
     const response = await request.post("/product-update").set('Authorization', 'bearer ' + process.env.TOKEN).send({productName: testSoda.productName, newCost: "1000 dollars US"});
     const alteredSoda = JSON.parse(response.text).data;
-    console.log(alteredSoda);
     expect(response.statusCode).toEqual(200);
     expect(alteredSoda.cost).toEqual("1000 dollars US");
     const lastResponse = await request.post("/product-update").set('Authorization', 'bearer ' + process.env.TOKEN).send({productName: testSoda.productName, newCost: testSoda.cost});
