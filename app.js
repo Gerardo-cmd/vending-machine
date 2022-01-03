@@ -24,9 +24,9 @@ app.use(cors({
 
 // Firebase starter code
 let serviceAccount;
-if (fs.existsSync('./secrets/vending-machine-81e32-firebase-adminsdk-ftml1-bef0d2a34f.json')) {
+if (fs.existsSync('./secrets/vending-machine-81e32-firebase-adminsdk-ftml1-bef0d2a34f.json')) { //Make sure to have the json file
     serviceAccount = require('./secrets/vending-machine-81e32-firebase-adminsdk-ftml1-bef0d2a34f.json');
-} else {
+} else { //For github and hosting
     serviceAccount = JSON.parse(process.env.VENDING_FIREBASE_KEY);
 }
 admin.initializeApp({
